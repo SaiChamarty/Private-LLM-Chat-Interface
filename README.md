@@ -1,5 +1,4 @@
 # Private-LLM-Chat-Interface
----
 
 ## Structure of this Application
 ### UI of the Chat Interface
@@ -13,4 +12,5 @@ The LLM in this case is meant to be for emotional talk and conversation flow. I 
 #### Process of setting up inference
 As this is a large model with 27B to 31B parameters, it will need quantization and hardware optimization.  
 Before that, we will do the following:  
-- 
+- Install Docker and create a container
+- Run Gemma 4 on Ollama
