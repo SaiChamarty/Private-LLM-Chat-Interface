@@ -17,7 +17,7 @@ Before that, we will do the following:
 curl -fsSL https://get.docker.com -o get-docker.sh
 sudo sh get-docker.sh
 ```
-- Install NVIDIA toolkit
+- Install NVIDIA toolkit to the host server. So when we pass in the command `--gpus=all` command, apt understands to let the individual container to use the graphics card hardware.
 ```
 # Add the package repositories
 curl -fsSL https://nvidia.github.io/libnvidia-container/gpgkey | sudo gpg --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
