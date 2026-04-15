@@ -31,7 +31,7 @@ sudo apt-get install -y nvidia-container-toolkit
 sudo nvidia-ctk runtime configure --runtime=docker
 sudo systemctl restart docker
 ```
-- Run Gemma 4 on Ollama
+- Run Gemma 4 on Ollama, specifically within a container with GPU access. We also map a volume so we don't have to re-download the Gemma model every time the container restarts. By mapping a volume, it essentially means when the container is deleted, the downloaded weights of the model stay in a safe folder. 
 ```
 docker run -d --gpus=all -v ollama:/root/.ollama -p 11434:11434 --name ollama ollama/ollama
 
