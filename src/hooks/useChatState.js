@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from 'react';
-import { fetchAIResponse } from '../mockData';
+import { fetchAIResponse } from '../api';
 
 /**
  * Central chat state management hook.
@@ -16,6 +16,12 @@ export function useChatState() {
   const sendMessage = useCallback(async (content) => {
     if (!content.trim() || isLoading) return;
 
+    // Cancel any in-flight request
+    if (abortRef.current) {
+      abortRef.current.abort();
+    }
+    abortRef.current = new AbortController();
+
     const userMessage = {
       id: `msg-${Date.now()}-user`,
       role: 'user',
@@ -27,8 +33,7 @@ export function useChatState() {
     setIsLoading(true);
 
     try {
-      // ---- SWAP POINT: Replace fetchAIResponse with your real API call ----
-      const aiText = await fetchAIResponse(content);
+      const aiText = await fetchAIResponse(content.trim(), abortRef.current.signal);
 
       const aiMessage = {
         id: `msg-${Date.now()}-ai`,
@@ -39,10 +44,13 @@ export function useChatState() {
 
       setMessages((prev) => [...prev, aiMessage]);
     } catch (error) {
+      // Don't show error if the request was intentionally aborted
+      if (error.name === 'AbortError') return;
+
       const errorMessage = {
         id: `msg-${Date.now()}-error`,
         role: 'assistant',
-        content: 'Sorry, something went wrong. Please try again.',
+        content: `⚠️ ${error.message || 'Something went wrong. Please try again.'}`,
         timestamp: Date.now(),
         isError: true,
       };
