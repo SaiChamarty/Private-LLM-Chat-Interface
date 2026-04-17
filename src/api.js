@@ -2,7 +2,8 @@
  * API service for the Junebase Chat backend.
  * Endpoint: https://chat.junebase.com/chat
  *
- * Sends a POST request with { prompt } and expects { reply } in response.
+ * Sends a POST request with { prompt, cf_turnstile_response }
+ * and expects { reply } in response.
  */
 
 const API_URL = 'https://chat.junebase.com/chat';
@@ -11,18 +12,22 @@ const API_URL = 'https://chat.junebase.com/chat';
  * Send a message to the Junebase Chat API and return the reply.
  *
  * @param {string} prompt - The user's message
+ * @param {string} turnstileToken - One-time Cloudflare Turnstile verification token
  * @param {AbortSignal} [signal] - Optional AbortController signal for cancellation
  * @returns {Promise<string>} The AI reply text
  * @throws {Error} If the request fails or is aborted
  */
-export async function fetchAIResponse(prompt, signal) {
+export async function fetchAIResponse(prompt, turnstileToken, signal) {
   const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ prompt }),
+    body: JSON.stringify({
+      prompt,
+      cf_turnstile_response: turnstileToken,
+    }),
     signal,
   });
 

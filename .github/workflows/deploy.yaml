@@ -1,0 +1,35 @@
+name: 🚀 Auto-Deploy Chat UI to junebase Server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📥 Checkout code
+        uses: actions/checkout@v3
+
+      - name: 🔐 Set up SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SERVER }}" > ~/.ssh/saigithub
+          chmod 600 ~/.ssh/saigithub
+          ssh-keyscan -p 2250 junebase.com >> ~/.ssh/known_hosts
+
+      - name: 🚀 Deploy to Server
+        run: |
+          ssh -i ~/.ssh/saigithub -p 2250 sai@junebase.com << 'EOF'
+            cd ~/Documents/projects/LLM-interface/Private-LLM-Chat-Interface
+            git pull origin main
+            npm install
+            npm run build
+
+            sudo rm -rf /var/www/chat/*
+            sudo cp -r dist/* /var/www/chat/
+            sudo chown -R www-data:www-data /var/www/chat
+            sudo systemctl restart apache2
+          EOF

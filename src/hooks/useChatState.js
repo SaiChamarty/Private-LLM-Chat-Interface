@@ -5,9 +5,9 @@ import { fetchAIResponse } from '../api';
  * Central chat state management hook.
  * Manages conversations, messages, and AI interaction.
  *
- * Replace fetchAIResponse() with your real API call to swap in the backend.
+ * @param {Function} getToken - Async function returning a Cloudflare Turnstile token
  */
-export function useChatState() {
+export function useChatState(getToken) {
   const [messages, setMessages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activeConversationId, setActiveConversationId] = useState(null);
@@ -33,7 +33,9 @@ export function useChatState() {
     setIsLoading(true);
 
     try {
-      const aiText = await fetchAIResponse(content.trim(), abortRef.current.signal);
+      // Get a fresh Turnstile token for this request
+      const turnstileToken = await getToken();
+      const aiText = await fetchAIResponse(content.trim(), turnstileToken, abortRef.current.signal);
 
       const aiMessage = {
         id: `msg-${Date.now()}-ai`,

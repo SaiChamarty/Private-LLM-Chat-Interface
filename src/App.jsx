@@ -13,10 +13,12 @@ import ChatFeed from './components/ChatFeed';
 import ChatInput from './components/ChatInput';
 import { useChatState } from './hooks/useChatState';
 import { useTheme } from './hooks/useTheme';
+import { useTurnstile } from './hooks/useTurnstile';
 
 export default function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { theme, toggleTheme } = useTheme();
+  const { containerRef: turnstileRef, getToken } = useTurnstile();
 
   const {
     messages,
@@ -25,7 +27,7 @@ export default function App() {
     sendMessage,
     startNewChat,
     selectConversation,
-  } = useChatState();
+  } = useChatState(getToken);
 
   const handleSuggestionClick = useCallback(
     (text) => {
@@ -100,6 +102,9 @@ export default function App() {
 
         {/* Input Area */}
         <ChatInput onSend={sendMessage} disabled={isLoading} />
+
+        {/* Invisible Cloudflare Turnstile widget */}
+        <div ref={turnstileRef} id="turnstile-container" style={{ position: 'fixed', bottom: 0, left: 0, zIndex: -1, opacity: 0, pointerEvents: 'none' }} />
       </main>
     </div>
   );
