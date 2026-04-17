@@ -1,10 +1,12 @@
 import { useEffect, useRef, useCallback } from 'react';
 
+/** Adding extra comment */
+
 /**
  * Cloudflare Turnstile site key.
  * Set via VITE_TURNSTILE_SITE_KEY env variable, or replace the fallback below.
  */
-const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY || 'YOUR_TURNSTILE_SITE_KEY';
+const SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY;
 
 /**
  * React hook for managing an invisible Cloudflare Turnstile widget.
