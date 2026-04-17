@@ -28,8 +28,8 @@ jobs:
             npm install
             npm run build
 
-            sudo rm -rf /var/www/chat/*
-            sudo cp -r dist/* /var/www/chat/
-            sudo chown -R www-data:www-data /var/www/chat
+            sudo rm -rf /var/www/chat.junebase.com/*
+            sudo cp -r dist/* /var/www/chat.junebase.com/
+            sudo chown -R www-data:www-data /var/www/chat.junebase.com/
             sudo systemctl restart apache2
           EOF
